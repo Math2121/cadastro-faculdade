@@ -1,12 +1,21 @@
 import { ReactNode } from "react";
 
 import { Container } from "./styles";
-import { FaEdit,FaTrashAlt } from "react-icons/fa";
-interface ListUsersProps {
-  children: ReactNode;
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { useFetch } from "../../hooks/useFetch";
+interface IList {
+  company: string;
+  cpf: string;
+  id: string;
+  name: string;
+  sector: string;
 }
-
-function ListUsers() {
+interface ILisUser{
+  onHandleChange:(id:string) => void;
+  onHandleDelete:(id:string) => void;
+}
+function ListUsers({onHandleChange,onHandleDelete}:ILisUser) {
+  const { data } = useFetch<IList[]>("users");
   return (
     <Container>
       <table>
@@ -20,20 +29,22 @@ function ListUsers() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <button type="button">
-                <FaEdit />
-              </button>
-              <button type="button">
-                <FaTrashAlt />
-              </button>
-            </td>
-          </tr>
+          {data?.map((item) => (
+            <tr key={item.id}>
+              <td>{item.cpf}</td>
+              <td>{item.name}</td>
+              <td>{item.sector}</td>
+              <td>{item.company}</td>
+              <td>
+                <button type="button" onClick={() =>onHandleChange(item.id)}>
+                  <FaEdit />
+                </button>
+                <button type="button" onClick={() =>onHandleDelete(item.id)}>
+                  <FaTrashAlt />
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </Container>

@@ -19,6 +19,31 @@ export const Container = styled.div`
 `;
 
 export const FormUser = styled.form`
+  .lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
   .input-group {
     display: flex;
     align-items: center;
@@ -30,7 +55,8 @@ export const FormUser = styled.form`
       margin-bottom: 10px;
       align-self: flex-start;
     }
-    input,select {
+    input,
+    select {
       &::placeholder {
         color: #fff;
         padding: 10px;

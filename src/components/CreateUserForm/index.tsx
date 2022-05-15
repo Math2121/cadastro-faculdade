@@ -1,21 +1,85 @@
-import { ReactNode, useState } from "react";
+import axios from "axios";
+import { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
+import { useRequest } from "../../hooks/useRequest";
 import { cnpjMask } from "../../utils/utils";
 import ListUsers from "../ListUsers";
 import { Container, FormUser } from "./styles";
-
-interface CreateUserFormProps {
-  children: ReactNode;
+interface IData {
+  data: {
+    company: string;
+    cpf: string;
+    id: string;
+    name: string;
+    sector: string;
+  };
 }
-
 function CreateUserForm() {
   const [cpf, setCpf] = useState("");
   const [name, setName] = useState("");
   const [sector, setSector] = useState("");
   const [company, setCompany] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<null | string>(null);
+  const handleLogin = (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const data = {
+      cpf,
+      name,
+      sector,
+      company,
+    };
+    if (status) {
+      setTimeout(async () => {
+        await axios.put(`http://localhost:4000/users/${status}`, data);
+        setLoading(false);
+        window.location.reload()
+      }, 5000);
+    } else {
+      setTimeout(() => {
+        useRequest<Object>("users", data);
+        setLoading(false);
+      }, 5000);
+    }
+    toast.success("🦄 Wow so easy!", {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
+  const handleChange = async (id: string) => {
+    setStatus(id);
+    const { data }: any = await axios.get<IData>(
+      `http://localhost:4000/users/${id}`
+    );
+    setName(data.name);
+    setSector(data?.sector);
+    setCompany(data?.company);
+    setCpf(data?.cpf);
+  };
+
+  const handleDelete = async (id: string) => {
+    const base = `http://localhost:4000/users/${id}`;
+    axios
+      .delete(base)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  
+  }
   return (
     <Container>
       <h1>Cadastro de Usuários</h1>
-      <FormUser>
+      <FormUser onSubmit={handleLogin}>
         <div className="input-group">
           <label htmlFor="cpf">CPF</label>
           <input
@@ -71,11 +135,11 @@ function CreateUserForm() {
         </div>
 
         <button type="submit" className="btn">
-          Enviar
+          {loading ? <span className="lds-dual-ring" /> : "Enviar"}
         </button>
       </FormUser>
 
-      <ListUsers />
+      <ListUsers onHandleChange={handleChange}  onHandleDelete={handleDelete}/>
     </Container>
   );
 }
