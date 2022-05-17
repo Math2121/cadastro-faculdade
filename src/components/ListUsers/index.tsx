@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { Container } from "./styles";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { useFetch } from "../../hooks/useFetch";
+import axios from "axios";
 interface IList {
   company: string;
   cpf: string;
@@ -10,12 +10,25 @@ interface IList {
   name: string;
   sector: string;
 }
-interface ILisUser{
-  onHandleChange:(id:string) => void;
-  onHandleDelete:(id:string) => void;
+interface ILisUser {
+  onHandleChange: (id: string) => void;
+  onHandleDelete: (id: string) => void;
 }
-function ListUsers({onHandleChange,onHandleDelete}:ILisUser) {
-  const { data } = useFetch<IList[]>("users");
+function ListUsers({ onHandleChange, onHandleDelete }: ILisUser) {
+  const [data, setData] = useState<IList[]>([]);
+  useEffect(() => {
+    const base = `http://localhost:3333/users`;
+
+    axios
+      .get(base)
+      .then((response) => {
+        setData(response.data);
+      })
+      .finally(() => {
+        console.log("ok");
+      });
+  }, []);
+  console.log(data);
   return (
     <Container>
       <table>
@@ -36,10 +49,10 @@ function ListUsers({onHandleChange,onHandleDelete}:ILisUser) {
               <td>{item.sector}</td>
               <td>{item.company}</td>
               <td>
-                <button type="button" onClick={() =>onHandleChange(item.id)}>
+                <button type="button" onClick={() => onHandleChange(item.id)}>
                   <FaEdit />
                 </button>
-                <button type="button" onClick={() =>onHandleDelete(item.id)}>
+                <button type="button" onClick={() => onHandleDelete(item.id)}>
                   <FaTrashAlt />
                 </button>
               </td>

@@ -9,7 +9,7 @@ function Paths() {
       <BrowserRouter>
         <Routes>
           <Route path="/users" element={<Home />} />
-          <Route path="/line" element={<Line />} />
+          <Route path="/telephone_line" element={<Line />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

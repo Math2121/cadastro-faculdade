@@ -1,11 +1,19 @@
 import axios from "axios";
-import { FormEvent, useState } from "react";
-import { toast } from "react-toastify";
+import { FormEvent, useEffect, useState } from "react";
 import { useRequest } from "../../hooks/useRequest";
 import { cnpjMask } from "../../utils/utils";
 import ListUsers from "../ListUsers";
 import { Container, FormUser } from "./styles";
 interface IData {
+  data: {
+    company: string;
+    cpf: string;
+    id: string;
+    name: string;
+    sector: string;
+  };
+}
+interface IList {
   data: {
     company: string;
     cpf: string;
@@ -21,6 +29,7 @@ function CreateUserForm() {
   const [company, setCompany] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<null | string>(null);
+
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -34,23 +43,15 @@ function CreateUserForm() {
       setTimeout(async () => {
         await axios.put(`http://localhost:4000/users/${status}`, data);
         setLoading(false);
-        window.location.reload()
+        window.location.reload();
       }, 5000);
     } else {
       setTimeout(() => {
         useRequest<Object>("users", data);
         setLoading(false);
+        window.location.reload();
       }, 5000);
     }
-    toast.success("🦄 Wow so easy!", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   };
 
   const handleChange = async (id: string) => {
@@ -74,8 +75,7 @@ function CreateUserForm() {
       .catch((error) => {
         console.log(error);
       });
-  
-  }
+  };
   return (
     <Container>
       <h1>Cadastro de Usuários</h1>
@@ -139,7 +139,7 @@ function CreateUserForm() {
         </button>
       </FormUser>
 
-      <ListUsers onHandleChange={handleChange}  onHandleDelete={handleDelete}/>
+      <ListUsers onHandleChange={handleChange} onHandleDelete={handleDelete} />
     </Container>
   );
 }
