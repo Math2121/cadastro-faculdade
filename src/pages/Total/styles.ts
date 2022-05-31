@@ -11,7 +11,7 @@ export const Content = styled.div`
   flex-direction: column;
 `;
 
-export const LabelStyle = styled.label`
+export const Title = styled.h1`
   margin-top: 2rem;
   width: 100%;
   padding: 0 1.5rem;

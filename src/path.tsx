@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import Home from "./pages/Home";
 import Line from "./pages/Line";
-import Total from "./pages/Total";
+import {Total} from "./pages/Total";
 
 function Paths() {
   return (
